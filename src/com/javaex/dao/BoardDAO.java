@@ -108,7 +108,7 @@ public class BoardDAO {
 								 			   ",u.name "+
 								 		"from users u, board b "+
 								 	    "where u.no = b.user_no "+
-								 		"order by reg_date desc)) "+
+								 		"order by reg_date desc, no desc)) "+
 							"where rn>? and rn<=?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, min);

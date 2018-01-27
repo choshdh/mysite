@@ -43,7 +43,7 @@ public class GuestBookDAO {
 		connect();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select no,name,content,reg_date from guestbook";
+			String query = "select no,name,content,reg_date from guestbook order by reg_date desc, no desc ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
