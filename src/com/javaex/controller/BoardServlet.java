@@ -77,11 +77,11 @@ public class BoardServlet extends HttpServlet {
 			if(showMinPage<minPage) { // 보여줄 페이지의 범위가 페이지의 최소 범위를 벗어나면
 				showMinPage = minPage;
 				showMaxPage = (showMinPage-1)+pageBundleSize;
-				System.out.println("최소 오류");
+				System.out.println("최소 범위 재설정");
 			}else if(showMaxPage>maxPage) { // 보여줄 페이지의 범위가 페이지의 최대 범위를 벗어나면
 				showMaxPage = maxPage;
 				showMinPage = (showMaxPage+1)-pageBundleSize;
-				System.out.println("최대 오류");
+				System.out.println("최대 범위 재설정");
 			}
 
 			//--5)
@@ -127,7 +127,7 @@ public class BoardServlet extends HttpServlet {
 					WebUtil.redirect(request, response, "/mysite/board?a=list"); // 사용자의 브라우저 새로고침으로 인한 insert 요청의 중복 발생을 방지 하기위하여 redirect 로 사용자의 브라우저 url 을 바꿔준다. 
 					
 				// 5.게시물 수정폼, 6.게시물 수정요청, 7.삭제 요청시 :따로 분리한 이유는 위의 select 과 insert 와는 다르게 DB에 이미 기록된 정보를 수정, 삭제 요청 하는 것이기 때문에 로그인한 유저와 해당 게시물의 작성자가 동일 한지 검사가 필요하다.
-				}else if(actionName.endsWith("modify") || actionName.endsWith("modifying") || actionName.endsWith("delete")){
+				}else if(actionName.equals("modify") || actionName.equals("modifying") || actionName.equals("delete")){
 					int loginUserNo = vo.getNo(); //로그인유저의 번호를 받아오고
 					int getBoardNo = Integer.parseInt(request.getParameter("bno")); // 어떤 글을 수정을 원하는지 번호를 받아온다.
 					BoardVO bvo = dao.select(getBoardNo); //dao 객체를 이용해서 사용자가 선택한 게시글의 정보를 검색해온다.

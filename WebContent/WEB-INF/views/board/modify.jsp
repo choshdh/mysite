@@ -16,7 +16,7 @@
 		
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="/mysite/modifying">
+				<form class="board-form" method="post" action="/mysite/board?a=modifying">
 					<input type="hidden" name ="bno" value="${requestScope.bvo.no}">
 					<input type="hidden" name= "buserno" value="${requestScope.bvo.userNo}">
 					<table class="tbl-ex">

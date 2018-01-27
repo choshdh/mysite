@@ -38,44 +38,44 @@ public class BoardDAO {
 		}
 	}
 
-	public List<BoardVO> selectAll() {
-		// 0. import java.sql.*;
-		connect();
-		List<BoardVO> l = new ArrayList<BoardVO>();
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select b.no , b.title, b.reg_date, b.hit, b.user_no , u.name from users u, board b where u.no = b.user_no ";
-			pstmt = conn.prepareStatement(query);
-			rs = pstmt.executeQuery();
-			
-			// 4.결과처리
-			while(rs.next()) {
-				BoardVO vo = new BoardVO();
-				int no = rs.getInt("no");
-				String title = rs.getString("title");
-				String regDate = rs.getString("reg_date");
-				int hit = rs.getInt("hit");
-				int userNo = rs.getInt("user_no");
-				String name = rs.getString("name");
-				vo.setNo(no);
-				vo.setTitle(title);
-				vo.setRegDate(regDate);
-				vo.setHit(hit);
-				vo.setUserNo(userNo);
-				vo.setName(name);
-				l.add(vo);
-				System.out.println(vo.toString());
-			}
-			
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-			
-			
-		} finally {
-			close();
-		}
-		return l;
-	}
+//	public List<BoardVO> selectAll() {
+//		// 0. import java.sql.*;
+//		connect();
+//		List<BoardVO> l = new ArrayList<BoardVO>();
+//		try {
+//			// 3. SQL문 준비 / 바인딩 / 실행
+//			String query = "select b.no , b.title, to_char(b.reg_date, 'YYYY-MM-DD') reg_date, b.hit, b.user_no , u.name from users u, board b where u.no = b.user_no ";
+//			pstmt = conn.prepareStatement(query);
+//			rs = pstmt.executeQuery();
+//			
+//			// 4.결과처리
+//			while(rs.next()) {
+//				BoardVO vo = new BoardVO();
+//				int no = rs.getInt("no");
+//				String title = rs.getString("title");
+//				String regDate = rs.getString("reg_date");
+//				int hit = rs.getInt("hit");
+//				int userNo = rs.getInt("user_no");
+//				String name = rs.getString("name");
+//				vo.setNo(no);
+//				vo.setTitle(title);
+//				vo.setRegDate(regDate);
+//				vo.setHit(hit);
+//				vo.setUserNo(userNo);
+//				vo.setName(name);
+//				l.add(vo);
+//				System.out.println(vo.toString());
+//			}
+//			
+//		} catch (SQLException e) {
+//			System.out.println("error:" + e);
+//			
+//			
+//		} finally {
+//			close();
+//		}
+//		return l;
+//	}
 	
 	
 	public List<BoardVO> selectList(int min,int max) {
@@ -102,7 +102,7 @@ public class BoardDAO {
 								 "from "+
 								 		"(select b.no "+
 								 			   ",b.title "+
-								 			   ",b.reg_date "+
+								 			   ",to_char(b.reg_date, 'YYYY-MM-DD HH24:MI') reg_date "+
 								 			   ",b.hit "+
 								 			   ",b.user_no "+
 								 			   ",u.name "+
@@ -191,6 +191,7 @@ public class BoardDAO {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
+			pstmt.setInt(3, vo.getNo());
 			int result = pstmt.executeUpdate();
 			
 			// 4.결과처리
