@@ -26,9 +26,9 @@
 						<th width="10%">번호</th>
 						<th width="20%">제목</th>
 						<th width="20%">글쓴이</th>
-						<th width="10%">조회수</th>
+						<th width="15%">조회수</th>
 						<th width="25%">작성일</th>
-						<th width="15%">&nbsp;</th>
+						<th width="10%">&nbsp;</th>
 					</tr>	
 					<!-- jstl -->
 					<c:forEach items="${requestScope.l }" var="bvo">
