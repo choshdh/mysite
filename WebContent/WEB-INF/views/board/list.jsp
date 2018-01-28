@@ -17,9 +17,30 @@
 		
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="" method="post">
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="/mysite/board?a=list" method="post">
+					<select name="searchType">
+						<c:choose>
+							<c:when test="${empty requestScope.searchType || requestScope.searchType == 'title'}">
+								<option value="title" selected="selected">제목</option>
+								<option value="title,content">제목+내용</option>
+								<option value="username">작성자명</option>
+							</c:when>
+							<c:when test="${requestScope.searchType == 'title,content'}">
+								<option value="title" >제목</option>
+								<option value="title,content" selected="selected">제목+내용</option>
+								<option value="username">작성자명</option>
+							</c:when>
+							<c:otherwise>
+								<option value="title" >제목</option>
+								<option value="title,content">제목+내용</option>
+								<option value="username" selected="selected">작성자명</option>
+							</c:otherwise>
+						</c:choose>
+						
+					</select>
+					<input type="text" id="kwd" name="kwd" value="${keyWord }">
 					<input type="submit" value="찾기">
+					
 				</form>
 				<table class="tbl-ex">
 					<tr>
@@ -51,15 +72,16 @@
 				</table>
 				<div class="pager">
 					<ul>
-						
+						<li><a href="/mysite/board?a=list&selectPage=${requestScope.minPage}&kwd=${requestScope.keyWord}&searchType=${requestScope.searchType}">◀◀</a></li>
+						<li></li>
 						
 						<!-- status의 count 값은 1부터 시작하지만 -->
 						<!-- status의 index 값은 begin값이 시작값으로 정해진다고한다. -->
 					 	<!-- begin 값으로 보여줄 최소 페이지값 을 넣고 end 값으로 보여줄 최대 페이지 값을 넣어 반복 횟수를 지정했다.-->
 				 		<c:forEach begin="${requestScope.showMinPage }" end="${requestScope.showMaxPage }" varStatus="status">
 				 			
-				 			<c:if test="${status.index==requestScope.showMinPage }">
-				 				<li><a href="/mysite/board?a=list&selectpage=${requestScope.selectPage-requestScope.movePage}">◀</a></li>
+				 			<c:if test="${status.index==requestScope.showMinPage && requestScope.showMinPage>requestScope.minPage}"><!-- 인덱스 번호가 표시할 페이지 번호의 첫번째 숫자와 같으면서 최소 페이지가 아니라면 -->
+				 				<li><a href="/mysite/board?a=list&selectPage=${requestScope.selectPage-requestScope.movePage}&kwd=${requestScope.keyWord}&searchType=${requestScope.searchType}">◀</a></li>
 				 			</c:if>
 				 		
 				 			<c:choose>	
@@ -69,7 +91,7 @@
 											<li class="selected">${status.index}</li>
 										</c:when>
 										<c:otherwise><!-- 나머지 경우엔 페이지 이동 할 수 있도록 a 태그로 작성 -->
-											<li><a href="/mysite/board?a=list&selectpage=${status.index}">${status.index}</a></li>
+											<li><a href="/mysite/board?a=list&selectPage=${status.index}&kwd=${requestScope.keyWord}&searchType=${requestScope.searchType}">${status.index}</a></li>
 										</c:otherwise>
 									</c:choose>
 				 				</c:when>
@@ -80,11 +102,14 @@
 				 				</c:otherwise>
 				 			</c:choose>
 				 			
-				 			<c:if test="${status.index==requestScope.showMaxPage }">
-				 				<li><a href="/mysite/board?a=list&selectpage=${requestScope.selectPage+requestScope.movePage}">▶</a></li>
+				 			<c:if test="${status.index==requestScope.showMaxPage && requestScope.showMaxPage<requestScope.maxPage}"><!-- 인덱스 번호가 표시할 페이지 번호의 마지막 숫자와 같으면서 마지막 페이지가 아니라면 -->
+				 				<li><a href="/mysite/board?a=list&selectPage=${requestScope.selectPage+requestScope.movePage}&kwd=${requestScope.keyWord}&searchType=${requestScope.searchType}">▶</a></li>
 				 			</c:if>
 				 			
 						</c:forEach>
+						
+						<li></li>
+						<li><a href="/mysite/board?a=list&selectPage=${requestScope.maxPage}&kwd=${requestScope.keyWord}&searchType=${requestScope.searchType}">▶▶</a></li>
 						
 					</ul>
 				</div>				

@@ -37,47 +37,123 @@ public class BoardDAO {
 			close();
 		}
 	}
+	
+	
+	public void update(BoardVO vo) {
+		// 0. import java.sql.*;
+		connect();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "update board " + 
+						   "set title = ? , content = ? " + 
+						   "where no = ? ";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, vo.getTitle());
+			pstmt.setString(2, vo.getContent());
+			pstmt.setInt(3, vo.getNo());
+			int result = pstmt.executeUpdate();
+			
+			// 4.결과처리
+			System.out.println("처리 결과 : " + result);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("error:" + e);
+			
+		} finally {
+			close();
+		}
+	}
+	
+	
+	public int delete(int getNo) {
+		// 0. import java.sql.*;
+		connect();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "delete from board where no = ? ";
+			pstmt = conn.prepareStatement(query); 
+			pstmt.setInt(1, getNo);
+			int result = pstmt.executeUpdate();
+			
+			// 4.결과처리	
+			System.out.println("처리 결과 : " + result);
+			
+			return result;
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+			return 0;
+		} finally {
+			close();
+		}
+	}
+	
+	
+	public void boardHit(int getNo) {
+		// 0. import java.sql.*;
+		connect();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "update board " + 
+						   "set hit = hit + 1 " + 
+						   "where no = ? ";
+			pstmt = conn.prepareStatement(query); 
+			pstmt.setInt(1, getNo);
+			int result = pstmt.executeUpdate();
+			
+			// 4.결과처리	
+			System.out.println("처리 결과 : " + result);
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			close();
+		}
+	}
+	
+	
+	//view.jsp 를 위한 게시물 검색
+	public BoardVO select(int getno) {
+		// 0. import java.sql.*;
+		connect();
+		BoardVO vo = new BoardVO();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select b.title " +
+								", b.content " + 
+								", b.user_no " + 
+						   "from users u, board b " + 
+						   "where u.no = b.user_no and b.no= ? ";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, getno);
+			rs = pstmt.executeQuery();
+			
+			
+			// 4.결과처리
+			while(rs.next()) {
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				int userNo = rs.getInt("user_no");
+				
+				vo.setNo(getno);
+				vo.setTitle(title);
+				vo.setContent(content);
+				vo.setUserNo(userNo);
+				
+			}
+				
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+			
+		} finally {
+			close();
+		}
 
-//	public List<BoardVO> selectAll() {
-//		// 0. import java.sql.*;
-//		connect();
-//		List<BoardVO> l = new ArrayList<BoardVO>();
-//		try {
-//			// 3. SQL문 준비 / 바인딩 / 실행
-//			String query = "select b.no , b.title, to_char(b.reg_date, 'YYYY-MM-DD') reg_date, b.hit, b.user_no , u.name from users u, board b where u.no = b.user_no ";
-//			pstmt = conn.prepareStatement(query);
-//			rs = pstmt.executeQuery();
-//			
-//			// 4.결과처리
-//			while(rs.next()) {
-//				BoardVO vo = new BoardVO();
-//				int no = rs.getInt("no");
-//				String title = rs.getString("title");
-//				String regDate = rs.getString("reg_date");
-//				int hit = rs.getInt("hit");
-//				int userNo = rs.getInt("user_no");
-//				String name = rs.getString("name");
-//				vo.setNo(no);
-//				vo.setTitle(title);
-//				vo.setRegDate(regDate);
-//				vo.setHit(hit);
-//				vo.setUserNo(userNo);
-//				vo.setName(name);
-//				l.add(vo);
-//				System.out.println(vo.toString());
-//			}
-//			
-//		} catch (SQLException e) {
-//			System.out.println("error:" + e);
-//			
-//			
-//		} finally {
-//			close();
-//		}
-//		return l;
-//	}
+		return vo;
+	}
 	
 	
+	//0)
+	//list.jsp를 위한 게시물 리스트 검색
 	public List<BoardVO> selectList(int min,int max) {
 		// 0. import java.sql.*;
 		connect();
@@ -143,120 +219,309 @@ public class BoardDAO {
 		}
 		return l;
 	}
-	
-	
-	public BoardVO select(int getno) {
-		// 0. import java.sql.*;
-		connect();
-		BoardVO vo = new BoardVO();
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select b.title, b.content, b.user_no from users u, board b where u.no = b.user_no and b.no= ? ";
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, getno);
-			rs = pstmt.executeQuery();
-			
-			
-			// 4.결과처리
-			while(rs.next()) {
-				String title = rs.getString("title");
-				String content = rs.getString("content");
-				int userNo = rs.getInt("user_no");
-				
-				vo.setNo(getno);
-				vo.setTitle(title);
-				vo.setContent(content);
-				vo.setUserNo(userNo);
-				
-			}
-				
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-			
-		} finally {
-			close();
-		}
-
-		return vo;
-	}
-	
-	
-	
-	public void update(BoardVO vo) {
-		// 0. import java.sql.*;
-		connect();
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "update board set title = ? , content = ? where no = ? ";
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getContent());
-			pstmt.setInt(3, vo.getNo());
-			int result = pstmt.executeUpdate();
-			
-			// 4.결과처리
-			System.out.println("처리 결과 : " + result);
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("error:" + e);
-			
-		} finally {
-			close();
-		}
-	}
-	
-	
-	public int delete(int getNo) {
-		// 0. import java.sql.*;
-		connect();
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "delete from board where no = ? ";
-			pstmt = conn.prepareStatement(query); 
-			pstmt.setInt(1, getNo);
-			int result = pstmt.executeUpdate();
-			
-			// 4.결과처리	
-			System.out.println("처리 결과 : " + result);
-			
-			return result;
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-			return 0;
-		} finally {
-			close();
-		}
-	}
-	
-	
-	public void boardHit(int getNo) {
-		// 0. import java.sql.*;
-		connect();
-		try {
-			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "update board set hit = hit + 1 where no = ? ";
-			pstmt = conn.prepareStatement(query); 
-			pstmt.setInt(1, getNo);
-			int result = pstmt.executeUpdate();
-			
-			// 4.결과처리	
-			System.out.println("처리 결과 : " + result);
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} finally {
-			close();
-		}
-	}
-	
+	//전체 게시물수
 	public int boardCount() {
 		// 0. import java.sql.*;
 		connect();
 		int count=0;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = "select count(no) no from board";
+			String query = "select count(no) no " + 
+						   "from board";
 			pstmt = conn.prepareStatement(query); 
+			rs = pstmt.executeQuery();
+			
+			// 4.결과처리	
+			while(rs.next()) {
+				count = rs.getInt("no");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			close();
+		}
+		return count;
+	}
+	
+	
+	//1)
+	//제목으로 검색
+	public List<BoardVO> t_SearchList(int min, int max, String keyWord) {
+		// 0. import java.sql.*;
+		connect();
+		List<BoardVO> l = new ArrayList<BoardVO>();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select rn "+
+								 ",no "+
+								 ",title "+
+								 ",reg_date "+
+								 ",hit "+
+								 ",user_no "+
+								 ",name "+
+						   "from "+
+								 "(select rownum rn "+
+								 		",no "+
+								 		",title "+
+								 		",reg_date "+
+								 		",hit "+
+								 		",user_no "+
+								 		",name "+
+								 "from "+
+								 		"(select b.no "+
+								 			   ",b.title "+
+								 			   ",to_char(b.reg_date, 'YYYY-MM-DD HH24:MI') reg_date "+
+								 			   ",b.hit "+
+								 			   ",b.user_no "+
+								 			   ",u.name "+
+								 		"from users u, board b "+
+								 	    "where u.no = b.user_no "+
+								 		"and b.title like ? " +
+								 		"order by reg_date desc, no desc)) "+
+							"where rn>? and rn<=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, keyWord);
+			pstmt.setInt(2, min);
+			pstmt.setInt(3, max);
+			rs = pstmt.executeQuery();
+			
+			// 4.결과처리
+			while(rs.next()) {
+				BoardVO vo = new BoardVO();
+				int no = rs.getInt("no");
+				String title = rs.getString("title");
+				String regDate = rs.getString("reg_date");
+				int hit = rs.getInt("hit");
+				int userNo = rs.getInt("user_no");
+				String name = rs.getString("name");
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setRegDate(regDate);
+				vo.setHit(hit);
+				vo.setUserNo(userNo);
+				vo.setName(name);
+				l.add(vo);
+				System.out.println(vo.toString());
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+			
+			
+		} finally {
+			close();
+		}
+		return l;
+	}
+	//제목으로 검색한 게시물 수
+	public int t_SearchBoardCount(String keyWord) {
+		// 0. import java.sql.*;
+		connect();
+		int count=0;
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select count(no) no " + 
+						   "from board " + 
+						   "where title like ?";
+			pstmt = conn.prepareStatement(query); 
+			pstmt.setString(1, keyWord);
+			rs = pstmt.executeQuery();
+			
+			// 4.결과처리	
+			while(rs.next()) {
+				count = rs.getInt("no");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			close();
+		}
+		return count;
+	}	
+	
+	
+	//2)
+	//제목+내용으로 검색
+	public List<BoardVO> tc_SearchList(int min, int max, String keyWord) {
+		// 0. import java.sql.*;
+		connect();
+		List<BoardVO> l = new ArrayList<BoardVO>();
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select rn "+
+								 ",no "+
+								 ",title "+
+								 ",reg_date "+
+								 ",hit "+
+								 ",user_no "+
+								 ",name "+
+						   "from "+
+								 "(select rownum rn "+
+								 		",no "+
+								 		",title "+
+								 		",reg_date "+
+								 		",hit "+
+								 		",user_no "+
+								 		",name "+
+								 "from "+
+								 		"(select b.no "+
+								 			   ",b.title "+
+								 			   ",to_char(b.reg_date, 'YYYY-MM-DD HH24:MI') reg_date "+
+								 			   ",b.hit "+
+								 			   ",b.user_no "+
+								 			   ",u.name "+
+								 		"from users u, board b "+
+								 	    "where u.no = b.user_no "+
+								 	    "and (b.title like ? or b.content like ?)" +
+								 		"order by reg_date desc, no desc)) "+
+							"where rn>? and rn<=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, keyWord);
+			pstmt.setString(2, keyWord);
+			pstmt.setInt(3, min);
+			pstmt.setInt(4, max);
+			rs = pstmt.executeQuery();
+			
+			// 4.결과처리
+			while(rs.next()) {
+				BoardVO vo = new BoardVO();
+				int no = rs.getInt("no");
+				String title = rs.getString("title");
+				String regDate = rs.getString("reg_date");
+				int hit = rs.getInt("hit");
+				int userNo = rs.getInt("user_no");
+				String name = rs.getString("name");
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setRegDate(regDate);
+				vo.setHit(hit);
+				vo.setUserNo(userNo);
+				vo.setName(name);
+				l.add(vo);
+				System.out.println(vo.toString());
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+			
+			
+		} finally {
+			close();
+		}
+		return l;
+	}
+	//제목+내용으로 검색한 게시물 수
+	public int tc_SearchBoardCount(String keyWord) {
+		// 0. import java.sql.*;
+		connect();
+		int count=0;
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select count(no) no " + 
+						   "from board " +
+					       "where title like ? or content like ?";
+			pstmt = conn.prepareStatement(query); 
+			pstmt.setString(1, keyWord);
+			pstmt.setString(2, keyWord);
+			rs = pstmt.executeQuery();
+			
+			// 4.결과처리	
+			while(rs.next()) {
+				count = rs.getInt("no");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			close();
+		}
+		return count;
+	}
+
+	
+	//3))
+	//작성자명으로 검색
+	public List<BoardVO> un_SearchList(int min, int max, String keyWord) {
+		// 0. import java.sql.*;
+				connect();
+				List<BoardVO> l = new ArrayList<BoardVO>();
+				try {
+					// 3. SQL문 준비 / 바인딩 / 실행
+					String query = "select rn "+
+										 ",no "+
+										 ",title "+
+										 ",reg_date "+
+										 ",hit "+
+										 ",user_no "+
+										 ",name "+
+								   "from "+
+										 "(select rownum rn "+
+										 		",no "+
+										 		",title "+
+										 		",reg_date "+
+										 		",hit "+
+										 		",user_no "+
+										 		",name "+
+										 "from "+
+										 		"(select b.no "+
+										 			   ",b.title "+
+										 			   ",to_char(b.reg_date, 'YYYY-MM-DD HH24:MI') reg_date "+
+										 			   ",b.hit "+
+										 			   ",b.user_no "+
+										 			   ",u.name "+
+										 		"from users u, board b "+
+										 	    "where u.no = b.user_no "+
+										 	    "and u.name like ? " +
+										 		"order by reg_date desc, no desc)) "+
+									"where rn>? and rn<=?";
+					pstmt = conn.prepareStatement(query);
+					pstmt.setString(1, keyWord);
+					pstmt.setInt(2, min);
+					pstmt.setInt(3, max);
+					rs = pstmt.executeQuery();
+					
+					// 4.결과처리
+					while(rs.next()) {
+						BoardVO vo = new BoardVO();
+						int no = rs.getInt("no");
+						String title = rs.getString("title");
+						String regDate = rs.getString("reg_date");
+						int hit = rs.getInt("hit");
+						int userNo = rs.getInt("user_no");
+						String name = rs.getString("name");
+						vo.setNo(no);
+						vo.setTitle(title);
+						vo.setRegDate(regDate);
+						vo.setHit(hit);
+						vo.setUserNo(userNo);
+						vo.setName(name);
+						l.add(vo);
+						System.out.println(vo.toString());
+					}
+					
+				} catch (SQLException e) {
+					System.out.println("error:" + e);
+					
+					
+				} finally {
+					close();
+				}
+				return l;
+	}
+	//작성자명으로 검색한 게시물 수
+	public int un_SearchBoardCount(String keyWord) {
+		// 0. import java.sql.*;
+		connect();
+		int count=0;
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "select count(b.no) no " +
+						   "from board b, users u " +
+						   "where b.user_no = u.no and u.name like ?";
+			pstmt = conn.prepareStatement(query); 
+			pstmt.setString(1, keyWord);
 			rs = pstmt.executeQuery();
 			
 			// 4.결과처리	
@@ -310,7 +575,5 @@ public class BoardDAO {
 		}
 	}
 
-
-	
 	
 }
