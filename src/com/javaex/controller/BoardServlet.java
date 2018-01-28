@@ -140,13 +140,13 @@ public class BoardServlet extends HttpServlet {
 				System.out.println("showMinPage : " + showMinPage);
 				System.out.println("showMaxPage : " + showMaxPage);		
 			}else if(showMaxPage>maxPage) { // 보여줄 페이지의 범위가 페이지의 최대 범위를 벗어나면
-				if(maxPage<pageBundleSize) {
+				if(maxPage<pageBundleSize) { //DB에 저장되어있는 데이터로 만들수 있는 리스트 크기가 페이지 묶음 크기보다 작으면
 					showMinPage = minPage;
 					showMaxPage = pageBundleSize;
 					System.out.println("최대 범위 재설정");
 					System.out.println("showMinPage : " + showMinPage);
 					System.out.println("showMaxPage : " + showMaxPage);	
-				}else {
+				}else { //리스트 크기가 페이지 묶음 크기보다 클때
 					showMaxPage = maxPage;
 					showMinPage = (showMaxPage+1)-pageBundleSize;
 					System.out.println("최대 범위 재설정");
