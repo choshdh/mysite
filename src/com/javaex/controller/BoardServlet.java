@@ -146,7 +146,7 @@ public class BoardServlet extends HttpServlet {
 					System.out.println("최대 범위 재설정");
 					System.out.println("showMinPage : " + showMinPage);
 					System.out.println("showMaxPage : " + showMaxPage);	
-				}else { //리스트 크기가 페이지 묶음 크기보다 클때
+				}else { //리스트 크기가 페이지 묶음 크기보다 작지 않을때
 					showMaxPage = maxPage;
 					showMinPage = (showMaxPage+1)-pageBundleSize;
 					System.out.println("최대 범위 재설정");
