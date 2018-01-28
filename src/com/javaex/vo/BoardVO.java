@@ -16,6 +16,20 @@ public class BoardVO {
 	public BoardVO() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+
+	public BoardVO(int no, String title, String content, String regDate, int hit, int userNo) {
+		super();
+		this.no = no;
+		this.title = title;
+		this.content = content;
+		this.regDate = regDate;
+		this.hit = hit;
+		this.userNo = userNo;
+	}
+
+
 
 	public int getNo() {
 		return no;

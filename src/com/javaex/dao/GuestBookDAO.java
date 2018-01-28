@@ -41,13 +41,14 @@ public class GuestBookDAO {
 	public List<GuestBookVO> selectAllGuestBook() {
 		// 0. import java.sql.*;
 		connect();
+		List<GuestBookVO> l = new ArrayList<GuestBookVO>();
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select no,name,content,reg_date from guestbook order by reg_date desc, no desc ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
-			List<GuestBookVO> l = new ArrayList<GuestBookVO>();
+			
 			// 4.결과처리
 			while(rs.next()) {
 				GuestBookVO vo = new GuestBookVO();
@@ -62,21 +63,20 @@ public class GuestBookDAO {
 				vo.setDate(regDate);
 				l.add(vo);
 			}
-			return l;
+			
 			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-			return null;
-			
 		} finally {
 			close();
 		}
-
+		return l;
 	}
 	
 	public GuestBookVO selectGuestBook(int getno) {
 		// 0. import java.sql.*;
 		connect();
+		GuestBookVO vo=null;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "select no,name,content,reg_date from guestbook where no = ?";
@@ -84,10 +84,9 @@ public class GuestBookDAO {
 			pstmt.setInt(1, getno);
 			rs = pstmt.executeQuery();
 			
-			GuestBookVO vo = new GuestBookVO();
 			// 4.결과처리
 			while(rs.next()) {
-				
+				vo = new GuestBookVO();
 				int no = rs.getInt("no");
 				String name = rs.getString("name");
 				String content = rs.getString("content");
@@ -98,16 +97,13 @@ public class GuestBookDAO {
 				vo.setContent(content);
 				vo.setDate(regDate);
 			}
-			return vo;
 			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-			return null;
-			
 		} finally {
 			close();
 		}
-
+		return vo;
 	}
 	
 	
@@ -129,7 +125,6 @@ public class GuestBookDAO {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("error:" + e);
-			
 		} finally {
 			close();
 		}
@@ -138,25 +133,26 @@ public class GuestBookDAO {
 	
 	public int deleteGuestBook(int no ,String pw) {
 		// 0. import java.sql.*;
-				connect();
+		connect();
+		int result=0;
 		try {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			String query = "delete from guestbook where no = ? and password = ?";
 			pstmt = conn.prepareStatement(query); 
 			pstmt.setInt(1, no);
 			pstmt.setString(2, pw);
-			int result = pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 			
 			// 4.결과처리	
 			System.out.println("처리 결과 : " + result);
 			
-			return result;
+
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-			return 0;
 		} finally {
 			close();
 		}
+		return result;
 	}
 	
 
