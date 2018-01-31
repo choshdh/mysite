@@ -19,7 +19,7 @@ import com.javaex.vo.UserVO;
 
 @WebServlet("/board")
 public class BoardServlet extends HttpServlet {
-
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
@@ -123,12 +123,15 @@ public class BoardServlet extends HttpServlet {
 				selectPage = maxPage;
 			}	
 			
+			System.out.println("페이지 최소 최대 범위");
 			System.out.println("minPage : " + minPage);
 			System.out.println("maxPage : " + maxPage);
 			
 			//보여줄 페이지의 최소,최대 범위 지정
 			int showMinPage = selectPage-(pageBundleSize/2); 
 			int showMaxPage = selectPage+(pageBundleSize/2);
+			
+			System.out.println("표시할 페이지 범위");
 			System.out.println("showMinPage : " + showMinPage);
 			System.out.println("showMaxPage : " + showMaxPage);
 			
@@ -136,22 +139,22 @@ public class BoardServlet extends HttpServlet {
 			if(showMinPage<minPage) { // 보여줄 페이지의 범위가 페이지의 최소 범위를 벗어나면
 				showMinPage = minPage;
 				showMaxPage = (showMinPage-1)+pageBundleSize;
-				System.out.println("최소 범위 재설정");
-				System.out.println("showMinPage : " + showMinPage);
-				System.out.println("showMaxPage : " + showMaxPage);		
+				System.err.println("표시할 페이지 범위가 페이지 최소 범위 초과 : 재설정");
+				System.err.println("showMinPage : " + showMinPage);
+				System.err.println("showMaxPage : " + showMaxPage);		
 			}else if(showMaxPage>maxPage) { // 보여줄 페이지의 범위가 페이지의 최대 범위를 벗어나면
 				if(maxPage<pageBundleSize) { //DB에 저장되어있는 데이터로 만들수 있는 리스트 크기가 페이지 묶음 크기보다 작으면
 					showMinPage = minPage;
 					showMaxPage = pageBundleSize;
-					System.out.println("최대 범위 재설정");
-					System.out.println("showMinPage : " + showMinPage);
-					System.out.println("showMaxPage : " + showMaxPage);	
+					System.err.println("표시할 페이지 범위가 페이지 최대 범위 초과 : 재설정");
+					System.err.println("showMinPage : " + showMinPage);
+					System.err.println("showMaxPage : " + showMaxPage);	
 				}else { //리스트 크기가 페이지 묶음 크기보다 작지 않을때
 					showMaxPage = maxPage;
 					showMinPage = (showMaxPage+1)-pageBundleSize;
-					System.out.println("최대 범위 재설정");
-					System.out.println("showMinPage : " + showMinPage);
-					System.out.println("showMaxPage : " + showMaxPage);		
+					System.err.println("표시할 페이지 범위가 페이지 최대 범위 초과 : 재설정");
+					System.err.println("showMinPage : " + showMinPage);
+					System.err.println("showMaxPage : " + showMaxPage);		
 				}
 			}
 																						   
