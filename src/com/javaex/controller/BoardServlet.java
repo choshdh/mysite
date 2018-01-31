@@ -21,7 +21,12 @@ import com.javaex.vo.UserVO;
 public class BoardServlet extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("board 진입");
 		request.setCharacterEncoding("UTF-8");
+		
+		System.out.println("페이지를 요청한 ip 주소 : " + request.getLocalAddr());
+		System.out.println("접근 포트 : " + request.getLocalPort());
+		System.out.println("ip 주소 지역 위치 : " + request.getLocale());
 		
 		HttpSession session = request.getSession();
 		UserVO vo = (UserVO) session.getAttribute("authUser");
